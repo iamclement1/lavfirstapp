@@ -32,13 +32,13 @@
                             style="width: 32px; height: 32px; border-radius: 16px"
                             src="https://gravatar.com/avatar/f64fc44c03a8a7eb1d52502950879659?s=128" /></a>
                     <a class="btn btn-sm btn-success mr-2" href="#">Create Post</a>
-                    <form action="/logout" method="GET" class="d-inline">
+                    <form action="/logout" method="POST" class="d-inline">
                         @csrf
                         <button class="btn btn-sm btn-secondary">Sign Out</button>
                     </form>
                 </div>
             @else
-                <form action="/login" method="GET" class="mb-0 pt-2 pt-md-0">
+                <form action="/login" method="POST" class="mb-0 pt-2 pt-md-0">
                     @csrf
                     <div class="row align-items-center">
                         <div class="col-md mr-0 pr-md-0 mb-3 mb-md-0">
@@ -59,13 +59,30 @@
     </header>
     <!-- header ends here -->
 
+    {{-- alert message --}}
+    @if(session()->has('success'))
+    <div class="container container--narrow">
+        <div class="alert alert-success text-center">
+            {{session('success')}}
+        </div>
+    </div>
+    @endif
+
+    @if(session()->has('error'))
+    <div class="container container--narrow">
+        <div class="alert alert-danger text-center">
+            {{session('error')}}
+        </div>
+    </div>
+    @endif
+
 
     {{ $slot }}
 
 
     <!-- footer begins -->
     <footer class="border-top text-center small text-muted py-3">
-        <p class="m-0">Copyright &copy; 2022 <a href="/" class="text-muted">OurApp</a>. All rights reserved.
+        <p class="m-0">Copyright &copy; {{date('Y')}} <a href="/" class="text-muted">OurApp</a>. All rights reserved.
         </p>
     </footer>
 

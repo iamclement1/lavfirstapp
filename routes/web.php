@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\WebController;
 use App\Http\Controllers\UserController;
 
 
@@ -18,11 +17,9 @@ use App\Http\Controllers\UserController;
 
 Route::get('/',[UserController::class, "showHomepage"] );
 
-Route::get('/about', [WebController::class, "About"] );
-
 Route::post('/register', [UserController::class, "register"]);
 
-Route::get('/login', [UserController::class, "login"]);
+Route::post('/login', [UserController::class, "login"]);
 
-Route::get('/logout', [UserController::class, "logout"]);
+Route::post('/logout', [UserController::class, "logout"]);
 
