@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BlogPostController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
@@ -14,12 +15,16 @@ use App\Http\Controllers\UserController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+//user related routes
+Route::get('/', [UserController::class, "showHomepage"])->name('login');
 
-Route::get('/',[UserController::class, "showHomepage"] );
+Route::post('/register', [UserController::class, "register"])->middleware('guest');
 
-Route::post('/register', [UserController::class, "register"]);
+Route::post('/login', [UserController::class, "login"])->middleware('guest');
 
-Route::post('/login', [UserController::class, "login"]);
+Route::post('/logout', [UserController::class, "logout"])->middleware('mustBeLoggedIn');
 
-Route::post('/logout', [UserController::class, "logout"]);
-
+//blog post routes
+Route::get('/create-post', [BlogPostController::class, "showCreateForm"])->middleware('mustBeLoggedIn');
+Route::post('/create-post', [BlogPostController::class, "newPost"])->middleware('mustBeLoggedIn');
+Route::get('/post/{post}', [BlogPostController::class, 'viewSinglePost']);
