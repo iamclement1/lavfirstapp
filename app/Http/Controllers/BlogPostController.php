@@ -8,7 +8,15 @@ use Illuminate\Http\Request;
 
 class BlogPostController extends Controller
 {
-    //
+    // policy to delete blog posts
+    public function delete(Post $post) {
+        if (auth()->user()->cannot('delete', $post)) {
+            return 'You cannot delete this post';
+        }
+        $post -> delete();
+        return redirect('/profile/' . auth()->user()->username)->with('success', 'Post deleted successfully');
+    }
+
     //create post
     public function newPost(Request $request)
     {
@@ -30,7 +38,7 @@ class BlogPostController extends Controller
         return view('create-post');
     }
     //show post url
-    public function viewSinglePost(Post $post) {
+    public function viewSinglePost(Post $post) {        
         $post['body'] = strip_tags(Str::markdown($post -> body), 
     '<p><h1><h2><h3><h4><h5><h6><em><br><strong><ul><li><ol>');
         return view('single-post', ['post' => $post]);
