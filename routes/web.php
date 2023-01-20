@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminPageController;
 use App\Http\Controllers\BlogPostController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -32,3 +33,7 @@ Route::delete('/post/{post}', [BlogPostController::class, 'delete']);
 
 //Profile related routes
 Route::get('/profile/{user:username}', [UserController::class, 'profile']);
+
+//set admin url
+
+Route::get('/admin', [AdminPageController::class, 'isAdmin'])->middleware('can:visitAdminPage');
