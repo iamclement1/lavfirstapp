@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
     //register user function 
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $incomingFields = $request->validate([
             'username' => ['required', 'min:3', 'max:20', Rule::unique('users', 'username')],
             'email' => ['required', 'email', Rule::unique('users', 'email')],
@@ -27,7 +30,8 @@ class UserController extends Controller
     }
 
     //login user function 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $incomingFields = $request->validate([
             'loginusername' => ['required'],
             'loginpassword' => ['required'],
@@ -41,10 +45,10 @@ class UserController extends Controller
             //
             return redirect('/')->with('error', 'Invalid Login');
         }
-
     }
     //show when user is logged in
-    public function showHomepage() {
+    public function showHomepage()
+    {
         if (auth()->check()) {
             return view("homepage-feed");
         } else {
@@ -53,16 +57,37 @@ class UserController extends Controller
     }
 
     //logout session 
-    public function logout() {
+    public function logout()
+    {
         auth()->logout();
         return redirect('/')->with('success', 'You have logged out!');
     }
 
     //profile controller function
-    public function profile(User $user) {
+    public function profile(User $user)
+    {
         // $userPosts = $user->posts()->get();
         // return $userPosts;
         // getting the user name and the post
         return view('profile-post', ['username' => $user->username, 'posts' => $user->posts()->latest()->get(), 'postCount' => $user->posts()->count()]);
+    }
+
+    public function manageAvatar()
+    {
+        return view('avatar-form');
+    }
+
+    public function storeAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required | image | max:3000',
+        ]);
+
+        $user = auth()->user();
+
+        $filename = $user->id . ' - ' . uniqid() . 'jpg';
+
+        $img = Image::make($request->file('avatar'))->fit(120)->encode('jpg');
+        Storage::put('public/avatars/' . $filename, $img);
     }
 }
