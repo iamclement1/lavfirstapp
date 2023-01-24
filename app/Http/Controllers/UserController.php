@@ -87,7 +87,12 @@ class UserController extends Controller
 
         $filename = $user->id . ' - ' . uniqid() . 'jpg';
 
+        //file storage on hard disk
         $img = Image::make($request->file('avatar'))->fit(120)->encode('jpg');
         Storage::put('public/avatars/' . $filename, $img);
+
+        //storing the image data to the database
+        $user -> avatar = $filename;
+        $user -> save();
     }
 }
