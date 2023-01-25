@@ -69,7 +69,7 @@ class UserController extends Controller
         // $userPosts = $user->posts()->get();
         // return $userPosts;
         // getting the user name and the post
-        return view('profile-post', ['username' => $user->username, 'posts' => $user->posts()->latest()->get(), 'postCount' => $user->posts()->count()]);
+        return view('profile-post', ['avatar' => $user->avatar, 'username' => $user->username, 'posts' => $user->posts()->latest()->get(), 'postCount' => $user->posts()->count()]);
     }
 
     public function manageAvatar()
@@ -91,8 +91,19 @@ class UserController extends Controller
         $img = Image::make($request->file('avatar'))->fit(120)->encode('jpg');
         Storage::put('public/avatars/' . $filename, $img);
 
+        //old profile image
+        $oldAvatar = $user->avatar;
+
         //storing the image data to the database
         $user -> avatar = $filename;
         $user -> save();
+
+        //set new profile image
+        if ($oldAvatar != "/fallback-avatar.jpg") {
+            //the str_replace() function is used to replace characters 
+            Storage::delete(str_replace("/storage/", "public", $oldAvatar));
+        }
+
+        return back()->with('success', 'Successfully uploaded another profile image.');
     }
 }
